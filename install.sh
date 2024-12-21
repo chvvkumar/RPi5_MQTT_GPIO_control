@@ -29,7 +29,7 @@ if [ -f $LOG_FILE ]; then
 fi
 
 # Copy the updated code to the target directory
-cp -rf /home/pi/RPi5_MQTT_GPIO_control
+cp -rf * /home/pi/RPi5_MQTT_GPIO_control
 
 # Navigate to the target directory
 cd $TARGET_DIR
