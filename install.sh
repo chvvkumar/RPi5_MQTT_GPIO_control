@@ -28,8 +28,8 @@ if [ -f $LOG_FILE ]; then
     sudo rm $LOG_FILE
 fi
 
-echo "Copying all files from the git repo to the target directory..."
-sudo cp -rf . $TARGET_DIR
+echo "Copying files to the target directory..."
+sudo cp -r /home/pi/git/RPi5_MQTT_GPIO_control/* /home/pi/RPi5_MQTT_GPIO_control/
 
 # Navigate to the target directory
 cd $TARGET_DIR
