@@ -28,8 +28,8 @@ if [ -f $LOG_FILE ]; then
     sudo rm $LOG_FILE
 fi
 
-# Copy the updated code to the target directory
-cp -rf * /home/pi/RPi5_MQTT_GPIO_control
+echo "Copying all files from the git repo to the target directory..."
+sudo cp -rf . $TARGET_DIR
 
 # Navigate to the target directory
 cd $TARGET_DIR
