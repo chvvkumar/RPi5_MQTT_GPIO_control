@@ -1,27 +1,46 @@
 #!/bin/bash
 
-# Define the target directory
+SERVICE_NAME="gpiocontrol.service"
 TARGET_DIR="/home/pi/RPi5_MQTT_GPIO_control"
+LOG_FILE="/var/log/gpiocontrol.log"
 
-# Create the target directory if it doesn't exist
-mkdir -p $TARGET_DIR
+# Stop the service
+sudo systemctl stop $SERVICE_NAME
 
-# Copy all files from the current directory to the target directory
-cp -rf * $TARGET_DIR
+# Disable the service
+sudo systemctl disable $SERVICE_NAME
+
+# Remove the service file
+sudo rm /etc/systemd/system/$SERVICE_NAME
+
+# Reload the systemd manager configuration
+sudo systemctl daemon-reload
+
+# Remove the log file if it exists
+if [ -f $LOG_FILE ]; then
+    sudo rm $LOG_FILE
+fi
 
 # Navigate to the target directory
 cd $TARGET_DIR
 
-# Create a virtual environment
-python3 -m venv venv
+# Pull the latest code from the repository
+git pull
 
-# Activate the virtual environment
-source venv/bin/activate
+# Reinstall the service
+./install.sh
 
-# Install the required packages
-pip install -r requirements.txt
+# Copy the service file to the systemd directory
+sudo cp $SERVICE_NAME /etc/systemd/system/
 
-# Deactivate the virtual environment
-deactivate
+# Reload the systemd manager configuration
+sudo systemctl daemon-reload
 
-echo "Setup complete. Files copied to $TARGET_DIR, virtual environment created, and requirements installed."
+# Enable the service to start on boot
+sudo systemctl enable $SERVICE_NAME
+
+# Start the service
+sudo systemctl start $SERVICE_NAME
+
+# Check the status of the service
+sudo systemctl status $SERVICE_NAME
