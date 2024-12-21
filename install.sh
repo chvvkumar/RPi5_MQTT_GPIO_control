@@ -4,6 +4,7 @@ REPO_DIR=$(pwd)
 INSTALL_DIR="/home/pi/RPi5_MQTT_GPIO_control"
 SERVICE_NAME="gpiocontrol.service"
 LOG_FILE="/var/log/gpiocontrol.log"
+VENV_DIR="$INSTALL_DIR/venv"
 
 echo "Performing git pull..."
 git pull
@@ -13,6 +14,12 @@ mkdir -p $INSTALL_DIR
 
 echo "Copying files to installation directory..."
 cp -r $REPO_DIR/* $INSTALL_DIR
+
+echo "Setting up virtual environment..."
+python3 -m venv $VENV_DIR
+source $VENV_DIR/bin/activate
+pip install -r $INSTALL_DIR/requirements.txt
+deactivate
 
 echo "Uninstalling existing service..."
 sudo systemctl stop $SERVICE_NAME
