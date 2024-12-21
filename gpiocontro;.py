@@ -45,6 +45,7 @@ def on_message(client, userdata, msg):
 
         if direction == "out":
             GPIO.setup(gpio_pin, GPIO.OUT)
+            logging.info(f"GPIO {name} - {gpio_pin} set to OUT")
             if state == "on":
                 GPIO.output(gpio_pin, GPIO.HIGH)
                 logging.info(f"GPIO {name} - {gpio_pin} set to HIGH")
@@ -54,6 +55,7 @@ def on_message(client, userdata, msg):
             else:
                 logging.error("Unknown state: %s", state)
         elif direction == "in":
+            logging.info(f"GPIO {name} - {gpio_pin} set to IN")
             GPIO.setup(gpio_pin, GPIO.IN)
             logging.info(f"GPIO {name} - {gpio_pin} set to IN")
         else:
