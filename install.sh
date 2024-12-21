@@ -4,6 +4,45 @@ SERVICE_NAME="gpiocontrol.service"
 TARGET_DIR="/home/pi/RPi5_MQTT_GPIO_control"
 LOG_FILE="/var/log/gpiocontrol.log"
 
+# Pull the latest code from the repository
+git pull
+#!/bin/bash
+
+SERVICE_NAME="gpiocontrol.service"
+TARGET_DIR="/home/pi/RPi5_MQTT_GPIO_control"
+LOG_FILE="/var/log/gpiocontrol.log"
+
+echo "Pulling the latest code from the repository..."
+git pull
+
+echo "Stopping the service..."
+sudo systemctl stop $SERVICE_NAME
+
+echo "Disabling the service..."
+sudo systemctl disable $SERVICE_NAME
+
+echo "Removing the service file..."
+sudo rm /etc/systemd/system/$SERVICE_NAME
+
+echo "Reloading the systemd manager configuration..."
+sudo systemctl daemon-reload
+
+echo "Checking if the log file exists..."
+if [ -f $LOG_FILE ]; then
+    echo "Removing the log file..."
+    sudo rm $LOG_FILE
+fi
+
+echo "Navigating to the target directory..."
+cd $TARGET_DIR
+
+echo "Reinstalling the service..."
+./install.sh
+
+echo "Copying the service file to the systemd directory..."
+sudo cp $SERVICE_NAME /etc/systemd/system/
+
+echo "Installation script completed."
 # Stop the service
 sudo systemctl stop $SERVICE_NAME
 
@@ -23,9 +62,6 @@ fi
 
 # Navigate to the target directory
 cd $TARGET_DIR
-
-# Pull the latest code from the repository
-git pull
 
 # Reinstall the service
 ./install.sh
