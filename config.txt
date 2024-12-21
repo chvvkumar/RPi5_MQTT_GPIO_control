@@ -1,6 +1,7 @@
 [MQTT]
 broker = 192.168.1.250
 port = 1883
-topic = RPi5_MQTT_GPIO_control/21_heater
+topic = RPi5_MQTT_GPIO_control/21_heater/out
+publish_topic = RPi5_MQTT_GPIO_control/21_heater/in
 username = 
 password = 

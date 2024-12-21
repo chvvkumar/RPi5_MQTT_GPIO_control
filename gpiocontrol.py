@@ -5,6 +5,7 @@ import RPi.GPIO as GPIO
 import configparser
 import os
 from threading import Timer
+import threading
 
 # Load configuration from config.txt
 config = configparser.ConfigParser()
@@ -15,7 +16,7 @@ MQTT_PORT = int(config['MQTT']['port'])
 MQTT_TOPIC = config['MQTT']['topic']
 MQTT_USERNAME = config['MQTT'].get('username')
 MQTT_PASSWORD = config['MQTT'].get('password')
-
+publish_topic = config['MQTT']['publish_topic']
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -51,6 +52,13 @@ def turn_off_gpio_pins():
     GPIO.cleanup()
     logging.info("All GPIO pins have been turned off due to prolonged disconnection.")
 
+def check_gpio_status(gpio_pin, name):
+    state = GPIO.input(gpio_pin)
+    status = "HIGH" if state == GPIO.HIGH else "LOW"
+    status_message = json.dumps({"gpio": gpio_pin, "name": name, "status": status})
+    client.publish(publish_topic, status_message)
+    logging.info(f"Published GPIO {name} - {gpio_pin} status: {status}")
+
 def on_message(client, userdata, msg):
     try:
         data = json.loads(msg.payload)
@@ -76,6 +84,9 @@ def on_message(client, userdata, msg):
                 logging.info(f"GPIO {name} - {gpio_pin} set to LOW")
             else:
                 logging.error("Unknown state: %s", state)
+            
+            # Check the status after 5 seconds
+            threading.Timer(5.0, check_gpio_status, args=(gpio_pin, name)).start()
         elif direction == "in":
             GPIO.setup(gpio_pin, GPIO.IN)
             logging.info(f"GPIO {name} - {gpio_pin} set to IN")
