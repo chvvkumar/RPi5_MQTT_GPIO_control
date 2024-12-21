@@ -18,8 +18,8 @@ MQTT_USERNAME = config['MQTT'].get('username')
 MQTT_PASSWORD = config['MQTT'].get('password')
 publish_topic = config['MQTT']['publish_topic']
 
-print(f"MQTT topic: {MQTT_TOPIC}")
-print(f"Publish topic: {publish_topic}")
+logging.info(f"MQTT Topic: {MQTT_TOPIC}")
+logging.info(f"MQTT Publish Topic: {publish_topic}")
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
