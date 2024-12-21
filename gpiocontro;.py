@@ -1,33 +1,35 @@
 import json
 import logging
-import paho.mqtt.client as mqtt
 import RPi.GPIO as GPIO
-import configparser
-import os
+import paho.mqtt.client as mqtt
+from threading import Timer
 
-# Load configuration from config.txt
-config = configparser.ConfigParser()
-config.read('config.txt')
+# Define the timer
+disconnect_timer = None
 
-MQTT_BROKER = config['MQTT']['broker']
-MQTT_PORT = int(config['MQTT']['port'])
-MQTT_TOPIC = config['MQTT']['topic']
-MQTT_USERNAME = config['MQTT'].get('username')
-MQTT_PASSWORD = config['MQTT'].get('password')
-
-
-# Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-
-# GPIO setup
-GPIO.setmode(GPIO.BCM)
+# Define the on_disconnect callback function
+def on_disconnect(client, userdata, rc):
+    global disconnect_timer
+    if rc != 0:
+        logging.warning("Unexpected disconnection. Starting a timer to turn off GPIO pins.")
+    # Start a timer to turn off GPIO pins after 15 minutes
+    disconnect_timer = Timer(900, turn_off_gpio_pins)
+    disconnect_timer.start()
 
 def on_connect(client, userdata, flags, rc):
+    global disconnect_timer
     if rc == 0:
-        logging.info("Connected to MQTT Broker")
-        client.subscribe(MQTT_TOPIC)
+        logging.info("Connected to MQTT broker")
+        # Cancel the disconnect timer if it exists
+        if disconnect_timer:
+            disconnect_timer.cancel()
+            disconnect_timer = None
     else:
         logging.error("Failed to connect, return code %d\n", rc)
+
+def turn_off_gpio_pins():
+    GPIO.cleanup()
+    logging.info("All GPIO pins have been turned off due to prolonged disconnection.")
 
 def on_message(client, userdata, msg):
     try:
@@ -55,7 +57,6 @@ def on_message(client, userdata, msg):
             else:
                 logging.error("Unknown state: %s", state)
         elif direction == "in":
-            logging.info(f"GPIO {name} - {gpio_pin} set to IN")
             GPIO.setup(gpio_pin, GPIO.IN)
             logging.info(f"GPIO {name} - {gpio_pin} set to IN")
         else:
@@ -67,12 +68,9 @@ def on_message(client, userdata, msg):
 
 client = mqtt.Client()
 client.on_connect = on_connect
+client.on_disconnect = on_disconnect
 client.on_message = on_message
 
 # Set MQTT login credentials if provided
 if MQTT_USERNAME and MQTT_PASSWORD:
     client.username_pw_set(MQTT_USERNAME, MQTT_PASSWORD)
-
-client.connect(MQTT_BROKER, MQTT_PORT, 60)
-
-client.loop_forever()
