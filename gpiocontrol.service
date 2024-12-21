@@ -7,7 +7,7 @@ WorkingDirectory=/home/pi/RPi5_MQTT_GPIO_control
 ExecStart=/home/pi/RPi5_MQTT_GPIO_control/venv/bin/python /home/pi/RPi5_MQTT_GPIO_control/gpiocontrol.py
 Restart=always
 Environment=PYTHONUNBUFFERED=1
-StandardError=journal
+StandardError=file:/var/log/gpiocontrol.log
 StandardOutput=file:/var/log/gpiocontrol.log
 
 [Install]
