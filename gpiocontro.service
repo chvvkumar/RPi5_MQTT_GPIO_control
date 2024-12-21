@@ -7,6 +7,8 @@ WorkingDirectory=/home/pi/RPi5_MQTT_GPIO_control
 ExecStart=/home/pi/RPi5_MQTT_GPIO_control/venv/bin/python /home/pi/RPi5_MQTT_GPIO_control/gpiocontro.py
 Restart=always
 Environment=PYTHONUNBUFFERED=1
+StandardOutput=file:/var/log/gpiocontrol.log
+StandardError=file:/var/log/gpiocontrol.log
 
 [Install]
 WantedBy=multi-user.target
