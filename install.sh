@@ -6,11 +6,6 @@ LOG_FILE="/var/log/gpiocontrol.log"
 
 # Pull the latest code from the repository
 git pull
-#!/bin/bash
-
-SERVICE_NAME="gpiocontrol.service"
-TARGET_DIR="/home/pi/RPi5_MQTT_GPIO_control"
-LOG_FILE="/var/log/gpiocontrol.log"
 
 echo "Pulling the latest code from the repository..."
 git pull
@@ -33,32 +28,8 @@ if [ -f $LOG_FILE ]; then
     sudo rm $LOG_FILE
 fi
 
-echo "Navigating to the target directory..."
-cd $TARGET_DIR
-
-echo "Reinstalling the service..."
-./install.sh
-
-echo "Copying the service file to the systemd directory..."
-sudo cp $SERVICE_NAME /etc/systemd/system/
-
-echo "Installation script completed."
-# Stop the service
-sudo systemctl stop $SERVICE_NAME
-
-# Disable the service
-sudo systemctl disable $SERVICE_NAME
-
-# Remove the service file
-sudo rm /etc/systemd/system/$SERVICE_NAME
-
-# Reload the systemd manager configuration
-sudo systemctl daemon-reload
-
-# Remove the log file if it exists
-if [ -f $LOG_FILE ]; then
-    sudo rm $LOG_FILE
-fi
+# Copy the updated code to the target directory
+cp -rf /home/pi/RPi5_MQTT_GPIO_control
 
 # Navigate to the target directory
 cd $TARGET_DIR
