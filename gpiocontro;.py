@@ -41,20 +41,21 @@ def on_message(client, userdata, msg):
         gpio_pin = data["gpio"]
         direction = data["properties"]["direction"]
         state = data["properties"]["state"]
+        name = data["name"]
 
         if direction == "out":
             GPIO.setup(gpio_pin, GPIO.OUT)
             if state == "on":
                 GPIO.output(gpio_pin, GPIO.HIGH)
-                logging.info(f"GPIO {gpio_pin} set to HIGH")
+                logging.info(f"GPIO {name} - {gpio_pin} set to HIGH")
             elif state == "off":
                 GPIO.output(gpio_pin, GPIO.LOW)
-                logging.info(f"GPIO {gpio_pin} set to LOW")
+                logging.info(f"GPIO {name} - {gpio_pin} set to LOW")
             else:
                 logging.error("Unknown state: %s", state)
         elif direction == "in":
             GPIO.setup(gpio_pin, GPIO.IN)
-            logging.info(f"GPIO {gpio_pin} set to IN")
+            logging.info(f"GPIO {name} - {gpio_pin} set to IN")
         else:
             logging.error("Unknown direction: %s", direction)
     except json.JSONDecodeError:
