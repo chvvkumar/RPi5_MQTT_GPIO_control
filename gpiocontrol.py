@@ -13,13 +13,13 @@ config.read('config.txt')
 
 MQTT_BROKER = config['MQTT']['broker']
 MQTT_PORT = int(config['MQTT']['port'])
-MQTT_TOPIC = config['MQTT']['topic']
+MQTT_TOPIC = config['MQTT']['receive_topic']
 MQTT_USERNAME = config['MQTT'].get('username')
 MQTT_PASSWORD = config['MQTT'].get('password')
-publish_topic = config['MQTT']['publish_topic']
+PUBLISH_TOPIC = config['MQTT']['publish_topic']
 
 logging.info(f"MQTT Topic: {MQTT_TOPIC}")
-logging.info(f"MQTT Publish Topic: {publish_topic}")
+logging.info(f"MQTT Publish Topic: {PUBLISH_TOPIC}")
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -59,7 +59,7 @@ def check_gpio_status(gpio_pin, name):
     state = GPIO.input(gpio_pin)
     status = "HIGH" if state == GPIO.HIGH else "LOW"
     status_message = json.dumps({"gpio": gpio_pin, "name": name, "status": status})
-    client.publish(publish_topic, status_message)
+    client.publish(PUBLISH_TOPIC, status_message)
     logging.info(f"Published GPIO {name} - {gpio_pin} status: {status}")
 
 def on_message(client, userdata, msg):
