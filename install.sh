@@ -7,7 +7,7 @@ TARGET_DIR="/home/pi/RPi5_MQTT_GPIO_control"
 mkdir -p $TARGET_DIR
 
 # Copy all files from the current directory to the target directory
-cp -r * $TARGET_DIR
+cp -rf * $TARGET_DIR
 
 # Navigate to the target directory
 cd $TARGET_DIR
