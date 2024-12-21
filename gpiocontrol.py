@@ -22,7 +22,7 @@ logging.info(f"MQTT Topic: {MQTT_TOPIC}")
 logging.info(f"MQTT Publish Topic: {PUBLISH_TOPIC}")
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s', filename='/var/log/gpiocontrol.log')
 
 # GPIO setup
 GPIO.setmode(GPIO.BCM)
