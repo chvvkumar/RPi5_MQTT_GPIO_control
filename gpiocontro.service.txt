@@ -1,0 +1,13 @@
+[Unit]
+Description=GPIO Control Service
+After=network.target
+
+[Service]
+User=your_username
+WorkingDirectory=/path/to/your/project
+ExecStart=/path/to/your/venv/bin/python /path/to/your/project/gpiocontro;.py
+Restart=always
+Environment=PYTHONUNBUFFERED=1
+
+[Install]
+WantedBy=multi-user.target
