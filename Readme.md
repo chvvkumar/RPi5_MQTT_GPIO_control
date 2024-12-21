@@ -5,7 +5,7 @@ JSON payload example:
 ```shell
 {
     "name": "GPIO Name",
-    "gpio": 30,
+    "gpio": 21,
     "properties": {
         "direction": "out",
         "state": "on"
