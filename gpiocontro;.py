@@ -2,17 +2,19 @@ import json
 import logging
 import paho.mqtt.client as mqtt
 import RPi.GPIO as GPIO
-from dotenv import load_dotenv
+import configparser
 import os
 
-# Load environment variables from .env file
-load_dotenv()
+# Load configuration from config.txt
+config = configparser.ConfigParser()
+config.read('config.txt')
 
-MQTT_BROKER = os.getenv('MQTT_BROKER')
-MQTT_PORT = int(os.getenv('MQTT_PORT'))
-MQTT_TOPIC = os.getenv('MQTT_TOPIC')
-MQTT_USERNAME = os.getenv('MQTT_USERNAME')
-MQTT_PASSWORD = os.getenv('MQTT_PASSWORD')
+MQTT_BROKER = config['MQTT']['broker']
+MQTT_PORT = int(config['MQTT']['port'])
+MQTT_TOPIC = config['MQTT']['topic']
+MQTT_USERNAME = config['MQTT'].get('username')
+MQTT_PASSWORD = config['MQTT'].get('password')
+
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
