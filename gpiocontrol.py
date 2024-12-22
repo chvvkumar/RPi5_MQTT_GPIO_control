@@ -117,9 +117,6 @@ if MQTT_USERNAME and MQTT_PASSWORD:
 
 client.connect(MQTT_BROKER, MQTT_PORT, 60)
 client.loop_start()
-time.sleep(1)
-client.loop_stop()
-client.disconnect()
 
 #GPIO.cleanup()
 
@@ -127,4 +124,3 @@ logging.info("Sleeping for 30 seconds before restarting")
 sleep_time = 30
 logging.info(f"Sleeping for {sleep_time} seconds")
 time.sleep(sleep_time)
-
