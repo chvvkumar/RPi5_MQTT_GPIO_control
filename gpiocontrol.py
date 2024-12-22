@@ -21,7 +21,7 @@ MQTT_TOPIC = config['MQTT']['receive_topic']
 MQTT_USERNAME = config['MQTT'].get('username')
 MQTT_PASSWORD = config['MQTT'].get('password')
 PUBLISH_TOPIC = config['MQTT']['publish_topic']
-INTERVAL = config['MQTT']['interval']
+INTERVAL = int(config['MQTT']['interval'])
 
 logging.info(f"MQTT Topic: {MQTT_TOPIC}")
 logging.info(f"MQTT Publish Topic: {PUBLISH_TOPIC}")
