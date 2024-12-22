@@ -5,3 +5,4 @@ receive_topic = Astro/AllSky/GPIO/out
 publish_topic = Astro/AllSky/GPIO/in
 username = 
 password = 
+interval = 60

@@ -21,6 +21,7 @@ MQTT_TOPIC = config['MQTT']['receive_topic']
 MQTT_USERNAME = config['MQTT'].get('username')
 MQTT_PASSWORD = config['MQTT'].get('password')
 PUBLISH_TOPIC = config['MQTT']['publish_topic']
+INTERVAL = config['MQTT']['interval']
 
 logging.info(f"MQTT Topic: {MQTT_TOPIC}")
 logging.info(f"MQTT Publish Topic: {PUBLISH_TOPIC}")
@@ -59,7 +60,8 @@ def turn_off_gpio_pins():
 def check_gpio_status(gpio_pin, name):
     state = GPIO.input(gpio_pin)
     status = "HIGH" if state == GPIO.HIGH else "LOW"
-    status_message = json.dumps({"gpio": gpio_pin, "name": name, "status": status})
+    timestamp = time.strftime('%Y-%m-%d %H:%M:%S')
+    status_message = json.dumps({"gpio": gpio_pin, "name": name, "status": status, "timestamp": timestamp})
     client.publish(PUBLISH_TOPIC, status_message)
     logging.info(f"Published GPIO {name} - {gpio_pin} status: {status}")
 
@@ -120,7 +122,6 @@ client.loop_start()
 
 #GPIO.cleanup()
 
-logging.info("Sleeping for 30 seconds before restarting")
 sleep_time = 30
-logging.info(f"Sleeping for {sleep_time} seconds")
-time.sleep(sleep_time)
+logging.info(f"Sleeping for {INTERVAL} seconds")
+time.sleep(INTERVAL)
