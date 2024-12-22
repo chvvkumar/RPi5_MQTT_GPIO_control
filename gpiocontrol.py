@@ -59,7 +59,7 @@ def turn_off_gpio_pins():
 
 def check_gpio_status(gpio_pin, name):
     state = GPIO.input(gpio_pin)
-    status = "HIGH" if state == GPIO.HIGH else "LOW"
+    status = "On" if state == GPIO.HIGH else "Off"
     timestamp = time.strftime('%Y-%m-%d %H:%M:%S')
     status_message = json.dumps({"gpio": gpio_pin, "name": name, "status": status, "timestamp": timestamp})
     client.publish(PUBLISH_TOPIC, status_message)
