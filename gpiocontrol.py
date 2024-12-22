@@ -68,34 +68,39 @@ def on_message(client, userdata, msg):
         data = json.loads(msg.payload)
         
         # Validate JSON structure
-        if "gpio" not in data or "properties" not in data or "direction" not in data["properties"] or "state" not in data["properties"]:
+        if "MQTT_GPIO" not in data:
             logging.error("Invalid JSON structure")
             return
         
-        gpio_pin = data["gpio"]
-        direction = data["properties"]["direction"]
-        state = data["properties"]["state"]
-        name = data["name"]
+        gpio_data = data["MQTT_GPIO"]
+        
+        for pin_key, pin_data in gpio_data.items():
+            gpio_pin = pin_data["pin"]
+            direction = pin_data["direction"]
+            state = pin_data["state"]
+            name = pin_data["name"]
 
-        if direction == "out":
-            GPIO.setup(gpio_pin, GPIO.OUT)
-            logging.info(f"GPIO {name} - {gpio_pin} set to OUT")
-            if state == "on":
-                GPIO.output(gpio_pin, GPIO.HIGH)
-                logging.info(f"GPIO {name} - {gpio_pin} set to HIGH")
-            elif state == "off":
-                GPIO.output(gpio_pin, GPIO.LOW)
-                logging.info(f"GPIO {name} - {gpio_pin} set to LOW")
-            else:
-                logging.error("Unknown state: %s", state)
+            logging.info(f"Processing GPIO {name} - {gpio_pin} with direction {direction} and state {state}")
             
-            # Check the status after 5 seconds
-            threading.Timer(5.0, check_gpio_status, args=(gpio_pin, name)).start()
-        elif direction == "in":
-            GPIO.setup(gpio_pin, GPIO.IN)
-            logging.info(f"GPIO {name} - {gpio_pin} set to IN")
-        else:
-            logging.error("Unknown direction: %s", direction)
+            if direction == "out":
+                GPIO.setup(gpio_pin, GPIO.OUT)
+                logging.info(f"GPIO {name} - {gpio_pin} set to OUT")
+                if state == "on":
+                    GPIO.output(gpio_pin, GPIO.HIGH)
+                    logging.info(f"GPIO {name} - {gpio_pin} set to HIGH")
+                elif state == "off":
+                    GPIO.output(gpio_pin, GPIO.LOW)
+                    logging.info(f"GPIO {name} - {gpio_pin} set to LOW")
+                else:
+                    logging.error("Unknown state: %s", state)
+                
+                # Check the status after 5 seconds
+                threading.Timer(5.0, check_gpio_status, args=(gpio_pin, name)).start()
+            elif direction == "in":
+                GPIO.setup(gpio_pin, GPIO.IN)
+                logging.info(f"GPIO {name} - {gpio_pin} set to IN")
+            else:
+                logging.error("Unknown direction: %s", direction)
     except json.JSONDecodeError:
         logging.error("Error decoding JSON")
     except Exception as e:
@@ -117,4 +122,3 @@ client.loop_stop()
 client.disconnect()
 
 GPIO.cleanup()
-sleep = 30
