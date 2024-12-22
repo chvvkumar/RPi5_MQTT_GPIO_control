@@ -122,3 +122,8 @@ client.loop_stop()
 client.disconnect()
 
 GPIO.cleanup()
+
+logging.info("Sleeping for 30 seconds before restarting")
+sleep_time = 30
+logging.info(f"Sleeping for {sleep_time} seconds")
+time.sleep(sleep_time)
