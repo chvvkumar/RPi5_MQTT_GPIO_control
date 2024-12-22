@@ -8,6 +8,9 @@ from threading import Timer
 import threading
 import time
 
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+
 # Load configuration from config.txt
 config = configparser.ConfigParser()
 config.read('config.txt')
@@ -21,9 +24,6 @@ PUBLISH_TOPIC = config['MQTT']['publish_topic']
 
 logging.info(f"MQTT Topic: {MQTT_TOPIC}")
 logging.info(f"MQTT Publish Topic: {PUBLISH_TOPIC}")
-
-# Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s', filename='/var/log/gpiocontrol.log')
 
 # GPIO setup
 GPIO.setmode(GPIO.BCM)
@@ -127,3 +127,4 @@ logging.info("Sleeping for 30 seconds before restarting")
 sleep_time = 30
 logging.info(f"Sleeping for {sleep_time} seconds")
 time.sleep(sleep_time)
+
