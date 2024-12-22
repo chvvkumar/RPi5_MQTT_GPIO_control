@@ -1,7 +1,7 @@
 [MQTT]
 broker = 192.168.1.250
 port = 1883
-receive_topic = RPi5_MQTT_GPIO_control/21_heater/out
-publish_topic = RPi5_MQTT_GPIO_control/21_heater/in
+receive_topic = Astro/AllSky/GPIO/out
+publish_topic = Astro/AllSky/GPIO/in
 username = 
 password = 
