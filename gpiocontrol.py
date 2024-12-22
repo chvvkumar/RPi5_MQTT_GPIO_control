@@ -6,6 +6,7 @@ import configparser
 import os
 from threading import Timer
 import threading
+import time
 
 # Load configuration from config.txt
 config = configparser.ConfigParser()
@@ -110,5 +111,10 @@ if MQTT_USERNAME and MQTT_PASSWORD:
     client.username_pw_set(MQTT_USERNAME, MQTT_PASSWORD)
 
 client.connect(MQTT_BROKER, MQTT_PORT, 60)
+client.loop_start()
+time.sleep(1)
+client.loop_stop()
+client.disconnect()
 
-client.loop_forever()
+GPIO.cleanup()
+sleep = 30
