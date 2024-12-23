@@ -1,0 +1,8 @@
+[MQTT]
+broker = 192.168.1.250
+port = 1883
+receive_topic = Astro/AllSky/GPIO/out
+publish_topic = Astro/AllSky/GPIO/in
+username = 
+password = 
+interval = 60
