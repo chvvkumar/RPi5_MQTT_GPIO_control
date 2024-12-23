@@ -10,14 +10,14 @@ This project allows you to control the GPIO pins on a Raspberry Pi 5 using MQTT 
     cd <repository_directory>
     ```
 
-2. Install the required dependencies:
+2. Create venv and Install the required dependencies (or run the install script. Please read what it does before running it):
     ```sh
     pip install -r requirements.txt
     ```
 
 3. Configure the service:
     - Edit the `config.txt` file to set your MQTT broker details:
-        ```txt
+        ```
         [MQTT]
         broker = <your_mqtt_broker>
         port = <your_mqtt_port>
