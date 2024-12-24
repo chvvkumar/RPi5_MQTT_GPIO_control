@@ -85,8 +85,22 @@ Home Assistant Helper Timers:
 1. `timer.allsky_15_min_on_timer` - 15 minute ON timer - Turn on time for the Heater
 2. `timer.allsky_heater_last_triggered_timer` - 60 minute interval timer - Waits 60 minutes from the last tiem it turned on before turning on the heater again
 
-
-[![](https://mermaid.ink/img/pako:eNqNU21v2jAQ_isnfx1FBIiBaKrUklLGKO3UfNkSFHnkSKwmduQ421jgv88kFFA11vlTfLnn5Z5LKrKSERKHxIrlCXhuIMCcG_9ZM6WXcHV1Dbe-p3gco3LAVDXCOGEiRpAKPJ4hPDGtUYllA72tMeNqLEXENZfCARd_5pILDR_A6sA1PJY6kns0ZjkqpkuFuwY83oO3X7HYguufMex1FLA0LV42YYLGhApTVuhQN84wCnXdwgvgUYoHL-6J7q6Z6P-Z1sYg7UDGRXFgu6snm_yNyLJD0xhKcQa27HPwpAbf-0_l95QXCTx88TwHprUBeFwcuu7rrqnvYso2bxim9btPFxgmk-V5hAu5hVl1KcG3dk1qbKX5j9c1zE65fX7H8ewoN7-88o__WPn8pPXw3mzzo9jCRLRmZarhZtUoXoSSFjEzZoxH5jOv9kQB0QlmGBDHPEZMvQQkEDvTx0otnzdiRRytSmwRJcs4Ic6apYW5lXlkSF3OzL-SHas5E9-kzF4h5kqcivwijmXTtt3v9zrmjHqdAW2RjakO28Me7dtDOuhSatMR3bXI75rAaneH3UHX1KzByO71R9buD6g7KWg?type=png)](https://mermaid.live/edit#pako:eNqNU21v2jAQ_isnfx1FBIiBaKrUklLGKO3UfNkSFHnkSKwmduQ421jgv88kFFA11vlTfLnn5Z5LKrKSERKHxIrlCXhuIMCcG_9ZM6WXcHV1Dbe-p3gco3LAVDXCOGEiRpAKPJ4hPDGtUYllA72tMeNqLEXENZfCARd_5pILDR_A6sA1PJY6kns0ZjkqpkuFuwY83oO3X7HYguufMex1FLA0LV42YYLGhApTVuhQN84wCnXdwgvgUYoHL-6J7q6Z6P-Z1sYg7UDGRXFgu6snm_yNyLJD0xhKcQa27HPwpAbf-0_l95QXCTx88TwHprUBeFwcuu7rrqnvYso2bxim9btPFxgmk-V5hAu5hVl1KcG3dk1qbKX5j9c1zE65fX7H8ewoN7-88o__WPn8pPXw3mzzo9jCRLRmZarhZtUoXoSSFjEzZoxH5jOv9kQB0QlmGBDHPEZMvQQkEDvTx0otnzdiRRytSmwRJcs4Ic6apYW5lXlkSF3OzL-SHas5E9-kzF4h5kqcivwijmXTtt3v9zrmjHqdAW2RjakO28Me7dtDOuhSatMR3bXI75rAaneH3UHX1KzByO71R9buD6g7KWg)
+```mermaid
+graph TD
+    A[Start] --> B[Trigger: State Change or Time Pattern]
+    B --> C{Condition: Dewpoint + 10 > Outdoor Temperature}
+    C -->|Yes| D[Condition: Timer allsky_heater_last_triggered_timer is idle]
+    D -->|Yes| E[Start Timer allsky_heater_last_triggered_timer for 60 mins]
+    E --> F[Start Timer allsky_15_min_on_timer for 15 mins]
+    F --> G[Publish MQTT: Heater ON]
+    G --> H[Delay 15 mins]
+    H --> I[Publish MQTT: Heater OFF]
+    C -->|No| J{Condition: Timer allsky_15_min_on_timer is active}
+    J -->|Yes| K[Publish MQTT: Heater ON]
+    J -->|No| L{Condition: Dewpoint + 10 < Outdoor Temperature}
+    L -->|Yes| M[Publish MQTT: Heater OFF]
+    L -->|No| N[Default Action: Publish MQTT: Heater OFF]
+```
 
 ```yaml
 alias: Allsky - Dew Heater Control
