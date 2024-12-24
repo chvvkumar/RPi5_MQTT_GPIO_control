@@ -50,6 +50,7 @@ Send a JSON payload to the configured MQTT topic to control the GPIO pins. Below
 	}
 
 }
+```
 
 or control multiple GPIO pins like this
 
