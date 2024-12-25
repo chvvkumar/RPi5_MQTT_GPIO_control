@@ -23,6 +23,8 @@ MQTT_PASSWORD = config['MQTT'].get('password')
 PUBLISH_TOPIC = config['MQTT']['publish_topic']
 INTERVAL = int(config['MQTT']['interval'])
 
+logging.info(f"MQTT Broker: {MQTT_BROKER}")
+logging.info(f"MQTT Port: {MQTT_PORT}")
 logging.info(f"MQTT Topic: {MQTT_TOPIC}")
 logging.info(f"MQTT Publish Topic: {PUBLISH_TOPIC}")
 
@@ -117,8 +119,12 @@ client.on_message = on_message
 if MQTT_USERNAME and MQTT_PASSWORD:
     client.username_pw_set(MQTT_USERNAME, MQTT_PASSWORD)
 
-client.connect(MQTT_BROKER, MQTT_PORT, 60)
-client.loop_start()
+try:
+    logging.info("Attempting to connect to MQTT Broker...")
+    client.connect(MQTT_BROKER, MQTT_PORT, 60)
+    client.loop_start()
+except Exception as e:
+    logging.error(f"Error connecting to MQTT Broker: {e}")
 
 #GPIO.cleanup()
 
