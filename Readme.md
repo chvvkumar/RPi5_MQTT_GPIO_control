@@ -78,7 +78,7 @@ or control multiple GPIO pins like this
 ```
 
 
-Example Home Assistant automation:
+## Example Home Assistant automation:
 
 Home Assistant Helper Timers:
 
