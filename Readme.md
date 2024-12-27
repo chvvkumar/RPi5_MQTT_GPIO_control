@@ -37,18 +37,18 @@ Send a JSON payload to the configured MQTT topic to control the GPIO pins. Below
 
 ```json
 {
-	"MQTT_OutTemp": 39.56,
-	"MQTT_OutHumidity": 81,
-	"MQTT_OutDP": 34.2,				
-	"MQTT_GPIO": {
-		"21": {
-			"name": "Heater",
-			"pin": 21,
-			"direction": "out",
-			"state": "off"
-		}
-	}
-
+  "Cloud_status": "Overcast",
+  "MQTT_OutTemp": "45.86",
+  "MQTT_OutHumidity": "93",
+  "MQTT_OutDP": "44.0",
+  "MQTT_GPIO": {
+    "21": {
+      "name": "Heater",
+      "pin": 21,
+      "direction": "out",
+      "state": "off"
+    }
+  }
 }
 ```
 
@@ -56,24 +56,24 @@ or control multiple GPIO pins like this
 
 ```json
 {
-	"MQTT_OutTemp": 39.56,
-	"MQTT_OutHumidity": 81,
-	"MQTT_OutDP": 34.2,				
-	"MQTT_GPIO": {
-		"21": {
-			"name": "Heater",
-			"pin": 21,
-			"direction": "out",
-			"state": "off"
-		}
-		"21": {
-			"name": "Dome",
-			"pin": 22,
-			"direction": "out",
-			"state": "on"
-		}
-	}
-
+  "Cloud_status": "Overcast",
+  "MQTT_OutTemp": "45.86",
+  "MQTT_OutHumidity": "93",
+  "MQTT_OutDP": "44.0",
+  "MQTT_GPIO": {
+    "21": {
+      "name": "Heater",
+      "pin": 21,
+      "direction": "out",
+      "state": "off"
+    },
+    "22": {
+      "name": "Dome",
+      "pin": 22,
+      "direction": "out",
+      "state": "off"
+    }
+  }
 }
 ```
 
