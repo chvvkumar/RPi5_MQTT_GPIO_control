@@ -103,11 +103,27 @@ graph TD
 ```
 
 ```yaml
-alias: Allsky - Dew Heater Control
+alias: AllSky Dew Heater Control
 description: ""
+variables:
+  mqtt_payload: >
+    {
+      "Cloud_status": "{{ states('sensor.cloud_status') }}",
+      "MQTT_OutTemp": "{{ states('sensor.outdoor_temperature') }}",
+      "MQTT_OutHumidity": "{{ states('sensor.outdoor_humidity') }}",
+      "MQTT_OutDP": "{{ states('sensor.gw1100b_v2_2_3_dewpoint') }}",
+      "MQTT_GPIO": {
+        "21": {
+          "name": "Heater",
+          "pin": 21,
+          "direction": "out",
+          "state": "{{ 'on' if is_state('timer.allsky_15_min_on_timer', 'active') else 'off' }}"
+        }
+      }
+    }
 triggers:
   - entity_id:
-      - sensor.dewpoint
+      - sensor.gw1100b_v2_2_3_dewpoint
       - sensor.outdoor_temperature
     trigger: state
   - trigger: state
@@ -124,9 +140,15 @@ actions:
       - conditions:
           - condition: and
             conditions:
+              - condition: sun
+                before: sunrise
+                after: sunset
+                after_offset: "-01:00:00"
+                before_offset: "1:00:00"
+                enabled: true
               - condition: template
                 value_template: >-
-                  {{ (states('sensor.dewpoint') | float + 10) >
+                  {{ (states('sensor.gw1100b_v2_2_3_dewpoint') | float + 10) >
                   (states('sensor.outdoor_temperature') | float) }}
               - condition: state
                 entity_id: timer.allsky_heater_last_triggered_timer
@@ -148,7 +170,7 @@ actions:
                 - timer.allsky_15_min_on_timer
           - data:
               topic: Astro/AllSky/GPIO/out
-              payload: "{\n\t\"MQTT_OutTemp\": {{ states('sensor.outdoor_temperature') }},\n\t\"MQTT_OutHumidity\": {{ states('sensor.outdoor_humidity') }},\n\t\"MQTT_OutDP\": {{ states('sensor.dewpoint') }},\t\t\t\t\n\t\"MQTT_GPIO\": {\n\t\t\"21\": {\n\t\t\t\"name\": \"Heater\",\n\t\t\t\"pin\": 21,\n\t\t\t\"direction\": \"out\",\n\t\t\t\"state\": \"on\"\n\t\t}\n\t}\n\n}"
+              payload: "{{ mqtt_payload }}"
               retain: true
             action: mqtt.publish
           - delay:
@@ -158,7 +180,7 @@ actions:
               milliseconds: 0
           - data:
               topic: Astro/AllSky/GPIO/out
-              payload: "{\n\t\"MQTT_OutTemp\": {{ states('sensor.outdoor_temperature') }},\n\t\"MQTT_OutHumidity\": {{ states('sensor.outdoor_humidity') }},\n\t\"MQTT_OutDP\": {{ states('sensor.dewpoint') }},\t\t\t\t\n\t\"MQTT_GPIO\": {\n\t\t\"21\": {\n\t\t\t\"name\": \"Heater\",\n\t\t\t\"pin\": 21,\n\t\t\t\"direction\": \"out\",\n\t\t\t\"state\": \"off\"\n\t\t}\n\t}\n\n}"
+              payload: "{{ mqtt_payload }}"
               retain: true
             action: mqtt.publish
       - conditions:
@@ -168,24 +190,24 @@ actions:
         sequence:
           - data:
               topic: Astro/AllSky/GPIO/out
-              payload: "{\n\t\"MQTT_OutTemp\": {{ states('sensor.outdoor_temperature') }},\n\t\"MQTT_OutHumidity\": {{ states('sensor.outdoor_humidity') }},\n\t\"MQTT_OutDP\": {{ states('sensor.dewpoint') }},\t\t\t\t\n\t\"MQTT_GPIO\": {\n\t\t\"21\": {\n\t\t\t\"name\": \"Heater\",\n\t\t\t\"pin\": 21,\n\t\t\t\"direction\": \"out\",\n\t\t\t\"state\": \"on\"\n\t\t}\n\t}\n\n}"
+              payload: "{{ mqtt_payload }}"
               retain: true
             action: mqtt.publish
       - conditions:
           - condition: template
             value_template: >-
-              {{ (states('sensor.dewpoint') | float + 10) <
+              {{ (states('sensor.gw1100b_v2_2_3_dewpoint') | float + 10) <
               (states('sensor.outdoor_temperature') | float) }}
         sequence:
           - data:
               topic: Astro/AllSky/GPIO/out
-              payload: "{\n\t\"MQTT_OutTemp\": {{ states('sensor.outdoor_temperature') }},\n\t\"MQTT_OutHumidity\": {{ states('sensor.outdoor_humidity') }},\n\t\"MQTT_OutDP\": {{ states('sensor.dewpoint') }},\t\t\t\t\n\t\"MQTT_GPIO\": {\n\t\t\"21\": {\n\t\t\t\"name\": \"Heater\",\n\t\t\t\"pin\": 21,\n\t\t\t\"direction\": \"out\",\n\t\t\t\"state\": \"off\"\n\t\t}\n\t}\n\n}"
+              payload: "{{ mqtt_payload }}"
               retain: true
             action: mqtt.publish
     default:
       - data:
           topic: Astro/AllSky/GPIO/out
-          payload: "{\n\t\"MQTT_OutTemp\": {{ states('sensor.outdoor_temperature') }},\n\t\"MQTT_OutHumidity\": {{ states('sensor.outdoor_humidity') }},\n\t\"MQTT_OutDP\": {{ states('sensor.dewpoint') }},\t\t\t\t\n\t\"MQTT_GPIO\": {\n\t\t\"21\": {\n\t\t\t\"name\": \"Heater\",\n\t\t\t\"pin\": 21,\n\t\t\t\"direction\": \"out\",\n\t\t\t\"state\": \"off\"\n\t\t}\n\t}\n\n}"
+          payload: "{{ mqtt_payload }}"
           retain: true
         action: mqtt.publish
 mode: restart
