@@ -11,6 +11,7 @@ git pull
 
 echo "Creating installation directory..."
 mkdir -p $INSTALL_DIR
+cd $INSTALL_DIR
 
 echo "Copying files to installation directory..."
 cp -r $REPO_DIR/* $INSTALL_DIR
